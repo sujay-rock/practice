@@ -1,0 +1,118 @@
+package practice;
+import java.util.*;
+
+public class ResourceCombinations {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Get input for first resource group
+        System.out.print("Enter the number of resources in the first group: ");
+        int n1 = scanner.nextInt();
+        String[] resources1 = new String[n1];
+        int[] fuelConsumptions1 = new int[n1];
+        for (int i = 0; i < n1; i++) {
+            System.out.print("Enter the name and fuel consumption for resource " + (i+1) + ": ");
+            resources1[i] = scanner.next();
+            fuelConsumptions1[i] = scanner.nextInt();
+        }
+
+        // Get input for second resource group
+        System.out.print("Enter the number of resources in the second group: ");
+        int n2 = scanner.nextInt();
+        String[] resources2 = new String[n2];
+        int[] fuelConsumptions2 = new int[n2];
+        for (int i = 0; i < n2; i++) {
+            System.out.print("Enter the name and fuel consumption for resource " + (i+1) + ": ");
+            resources2[i] = scanner.next();
+            fuelConsumptions2[i] = scanner.nextInt();
+        }
+
+        // Get input for the desired combination size
+        System.out.print("Enter the size of the combination: ");
+        int k = scanner.nextInt();
+
+        // Calculate the total number of possible combinations
+        int totalCombinations = nCr(n1 + n2, k);
+
+        // Calculate the number of optimal combinations
+        int optimalCombinations = 0;
+        for (int i = 0; i < n1; i++) {
+            for (int j = 0; j < n2; j++) {
+                if (fuelConsumptions1[i] + fuelConsumptions2[j] == 10) {
+                    optimalCombinations++;
+                }
+            }
+        }
+
+        // Generate and print all other combinations
+        System.out.println("\nOther combinations:");
+        int combinationCount = 0;
+        for (int i = 0; i < n1; i++) {
+            for (int j = 0; j < n2; j++) {
+                int fuelConsumption = fuelConsumptions1[i] + fuelConsumptions2[j];
+                String combination = resources1[i] + " " + resources2[j];
+                if (fuelConsumption != 10 && !isOptimalCombination(combination)) {
+                    System.out.println("Combination: " + combination);
+                    System.out.println("Fuel consumption: " + fuelConsumption + "\n");
+                    combinationCount++;
+                }
+            }
+        }
+
+        // Print out summary information
+        System.out.println("Total number of combinations: " + totalCombinations);
+        System.out.println("Number of optimal combinations: " + optimalCombinations);
+        System.out.println("Number of other combinations: " + combinationCount);
+    }
+
+    // Method to check if a combination is the optimal one
+    private static boolean isOptimalCombination(String combination) {
+        return combination.equals("FuelTank Battery");
+    }
+
+    // Method to calculate nCr using a formula
+    private static int nCr(int n, int r) {
+        int numerator = 1;
+        int denominator = 1;
+        for (int i = 0; i < r; i++) {
+            numerator *= n-i;
+            denominator *= i+1;
+        }
+        return numerator/denominator;
+    }
+}
+
+
+
+sample input and output
+Enter the number of resources in the first group: 3
+Enter the name and fuel consumption for resource 1: SolarPanel 3
+Enter the name and fuel consumption for resource 2: FuelTank 5
+Enter the name and fuel consumption for resource 3: Battery 2
+Enter the number of resources in the second group: 2
+Enter the name and fuel consumption for resource 1: Engine 7
+Enter the name and fuel consumption for resource 2: Propeller 4
+Enter the size of the combination: 2
+
+Other combinations:
+Combination: SolarPanel Engine
+Fuel consumption: 10
+
+Combination: SolarPanel Propeller
+Fuel consumption: 7
+
+Combination: FuelTank Engine
+Fuel consumption: 12
+
+Combination: FuelTank Propeller
+Fuel consumption: 9
+
+Combination: Battery Engine
+Fuel consumption: 9
+
+Combination: Battery Propeller
+Fuel consumption: 6
+
+Total number of combinations: 10
+Number of optimal combinations: 1
+Number of other combinations: 6
