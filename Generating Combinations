@@ -1,0 +1,74 @@
+import java.util.*;
+
+public class ResourceCombinations {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Get number of resource groups
+        System.out.print("Enter number of resource groups: ");
+        int numResourceGroups = scanner.nextInt();
+        
+        // Create an array to hold the resource group sizes
+        int[] resourceGroupSizes = new int[numResourceGroups];
+        
+        // Get the size of each resource group
+        for (int i = 0; i < numResourceGroups; i++) {
+            System.out.print("Enter size of resource group " + (i+1) + ": ");
+            resourceGroupSizes[i] = scanner.nextInt();
+        }
+        
+        // Create a list to hold the resource groups
+        List<List<String>> resourceGroups = new ArrayList<>();
+        
+        // Get the resources for each group
+        for (int i = 0; i < numResourceGroups; i++) {
+            List<String> resourceGroup = new ArrayList<>();
+            System.out.println("Enter resources for group " + (i+1) + ":");
+            for (int j = 0; j < resourceGroupSizes[i]; j++) {
+                System.out.print("Enter resource " + (j+1) + ": ");
+                String resource = scanner.next();
+                resourceGroup.add(resource);
+            }
+            resourceGroups.add(resourceGroup);
+        }
+        
+        // Get the size of the combination
+        System.out.print("Enter size of combination: ");
+        int combinationSize = scanner.nextInt();
+        
+        // Generate the combinations
+        List<List<String>> combinations = generateResourceCombinations(resourceGroups, combinationSize);
+        
+        // Print the combinations
+        System.out.println("\nResource Combinations:");
+        for (List<String> combination : combinations) {
+            System.out.println(combination);
+        }
+    }
+    
+    // Generates resource combinations
+    public static List<List<String>> generateResourceCombinations(List<List<String>> resourceGroups, int combinationSize) {
+        List<List<String>> combinations = new ArrayList<>();
+        generateResourceCombinationsHelper(resourceGroups, combinationSize, new ArrayList<>(), combinations, 0);
+        return combinations;
+    }
+    
+    // Helper function for generating resource combinations
+    private static void generateResourceCombinationsHelper(List<List<String>> resourceGroups, int combinationSize, List<String> currentCombination, List<List<String>> combinations, int currentGroupIndex) {
+        if (currentCombination.size() == combinationSize) {
+            combinations.add(new ArrayList<>(currentCombination));
+            return;
+        }
+        
+        if (currentGroupIndex >= resourceGroups.size()) {
+            return;
+        }
+        
+        for (String resource : resourceGroups.get(currentGroupIndex)) {
+            currentCombination.add(resource);
+            generateResourceCombinationsHelper(resourceGroups, combinationSize, currentCombination, combinations, currentGroupIndex+1);
+            currentCombination.remove(resource);
+        }
+    }
+}
