@@ -1,0 +1,41 @@
+import java.util.*;
+
+public class CombinationGenerator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Get input from the user
+        System.out.print("Enter the number of strings to combine from the first list: ");
+        int k = scanner.nextInt();
+        System.out.print("Enter the number of strings to combine from the second list: ");
+        int l = scanner.nextInt();
+        
+        // Define the two lists
+        List<String> list1 = Arrays.asList("apple", "banana", "orange");
+        List<String> list2 = Arrays.asList("red", "green", "blue");
+        
+        // Generate the combinations of strings from the two lists
+        List<List<String>> combinations = new ArrayList<>();
+        generateCombinationsHelper(list1, k, 0, new ArrayList<>(), combinations);
+        generateCombinationsHelper(list2, l, 0, new ArrayList<>(), combinations);
+        
+        // Print the list of combinations
+        System.out.println("List of combinations:");
+        for (List<String> combination : combinations) {
+            System.out.println(combination);
+        }
+    }
+    
+    // Generate all possible combinations of k elements from a given list
+    private static void generateCombinationsHelper(List<String> list, int k, int start, List<String> current, List<List<String>> result) {
+        if (current.size() == k) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+        for (int i = start; i < list.size(); i++) {
+            current.add(list.get(i));
+            generateCombinationsHelper(list, k, i + 1, current, result);
+            current.remove(current.size() - 1);
+        }
+    }
+}
