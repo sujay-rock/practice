@@ -1,0 +1,63 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class StringCombination {
+    public static void main(String[] args) {
+        List<String> list1 = new ArrayList<>();
+        list1.add("A");
+        list1.add("B");
+        list1.add("C");
+        
+        List<String> list2 = new ArrayList<>();
+        list2.add("1");
+        list2.add("2");
+        list2.add("3");
+        
+        List<List<String>> combinations1 = generateCombinations(list1, list2, 2);
+        List<String> combinations2 = generateCombinations(list2);
+        
+        List<String> mergedCombinations = mergeCombinations(combinations1, combinations2);
+        
+        System.out.println("List 1 combinations: " + combinations1);
+        System.out.println("List 2 combinations: " + combinations2);
+        System.out.println("Merged combinations: " + mergedCombinations);
+    }
+    
+    public static List<List<String>> generateCombinations(List<String> list1, List<String> list2, int count) {
+        List<List<String>> combinations = new ArrayList<>();
+        for (int i = 0; i < list1.size(); i++) {
+            String first = list1.get(i);
+            for (int j = i + 1; j < list1.size(); j++) {
+                String second = list1.get(j);
+                for (String third : list2) {
+                    List<String> combination = new ArrayList<>();
+                    combination.add(first);
+                    combination.add(second);
+                    combination.add(third);
+                    combinations.add(combination);
+                }
+            }
+        }
+        return combinations;
+    }
+    
+    public static List<String> generateCombinations(List<String> list) {
+        List<String> combinations = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            String element = list.get(i);
+            combinations.add(element);
+        }
+        return combinations;
+    }
+    
+    public static List<String> mergeCombinations(List<List<String>> combinations1, List<String> combinations2) {
+        List<String> mergedCombinations = new ArrayList<>();
+        for (List<String> combination1 : combinations1) {
+            for (String combination2 : combinations2) {
+                String mergedCombination = String.join("", combination1) + combination2;
+                mergedCombinations.add(mergedCombination);
+            }
+        }
+        return mergedCombinations;
+    }
+}
