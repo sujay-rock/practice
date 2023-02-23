@@ -1,0 +1,88 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+
+public class CombinationGenerator {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Get the number of lists and the size of each list from the user
+        System.out.print("Enter the number of lists: ");
+        int numLists = scanner.nextInt();
+
+        int[] listSizes = new int[numLists];
+        for (int i = 0; i < numLists; i++) {
+            System.out.print("Enter the size of list " + (i+1) + ": ");
+            listSizes[i] = scanner.nextInt();
+        }
+
+        System.out.print("Enter the number of elements to select from each list: ");
+        int[] numSelected = new int[numLists];
+        for (int i = 0; i < numLists; i++) {
+            numSelected[i] = scanner.nextInt();
+        }
+
+        // Calculate the total number of combinations
+        int totalCombinations = 1;
+        for (int i = 0; i < numLists; i++) {
+            totalCombinations *= nCr(listSizes[i], numSelected[i]);
+        }
+
+        // Generate the combinations and print them to the console
+        List<List<String>> lists = createSampleLists(numLists, listSizes);
+        List<List<String>> combinations = generateCombinations(totalCombinations, lists, numSelected);
+        System.out.println("Total combinations: " + combinations.size());
+        System.out.println(combinations);
+    }
+
+    // Returns the number of ways to choose r items from n items
+    public static int nCr(int n, int r) {
+        int numerator = factorial(n);
+        int denominator = factorial(r) * factorial(n-r);
+        return numerator / denominator;
+    }
+
+    // Returns the factorial of n
+    public static int factorial(int n) {
+        if (n == 0 || n == 1) {
+            return 1;
+        }
+        return n * factorial(n-1);
+    }
+
+    // Generates all combinations of elements from the input lists
+    public static List<List<String>> generateCombinations(int totalCombinations, List<List<String>> lists, int[] numSelected) {
+        List<List<String>> combinations = new ArrayList<>();
+        int[] indices = new int[lists.size()];
+        int count = 0;
+        while (count < totalCombinations) {
+            List<String> combination = new ArrayList<>();
+            for (int i = 0; i < lists.size(); i++) {
+                List<String> list = lists.get(i);
+                int index = indices[i];
+                for (int j = 0; j < numSelected[i]; j++) {
+                    combination.add(list.get(index + j));
+                }
+                indices[i] += numSelected[i];
+            }
+            combinations.add(combination);
+            count++;
+        }
+        return combinations;
+    }
+
+    // Creates sample lists for testing purposes
+    public static List<List<String>> createSampleLists(int numLists, int[] listSizes) {
+        List<List<String>> lists = new ArrayList<>();
+        for (int i = 0; i < numLists; i++) {
+            List<String> list = new ArrayList<>();
+            for (int j = 0; j < listSizes[i]; j++) {
+                list.add("List" + (i+1) + "-Item" + (j+1));
+            }
+            lists.add(list);
+        }
+        return lists;
+    }
+}
