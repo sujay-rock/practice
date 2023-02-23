@@ -42,3 +42,32 @@ public class StringCombination {
         }
     }
 }
+
+
+
+The generateCombinations method takes in a list of input lists and a list of counts, where each count corresponds to the number of elements the user wants to select from the corresponding input list. The method calls the generateCombinationsHelper method recursively to generate all combinations of the specified counts from the input lists.
+
+The generateCombinationsHelper method is a recursive backtracking function that takes in the current combination being constructed, the result list to store the final combinations, and the current index of the input lists being considered. At each step, the method considers all elements of the current input list and adds them to the current combination. If the combination has the correct number of elements for the current input list, the method recursively calls itself with the next input list. Otherwise, it calls itself with the same input list again. After the recursive call returns, the method removes the last element from the current combination and repeats the process with the next element of the input list.
+
+The output of the program for the sample input is:
+
+csharp
+Copy code
+Combinations:
+[A, B, 1, X, Y]
+[A, B, 1, X, Z]
+[A, B, 1, Y, Z]
+[A, B, 2, X, Y]
+[A, B, 2, X, Z]
+[A, B, 2, Y, Z]
+[A, B, 3, X, Y]
+[A, B, 3, X, Z]
+[A, B, 3, Y, Z]
+[A, C, 1, X, Y]
+[A, C, 1, X, Z]
+[A, C, 1, Y, Z]
+[A, C, 2, X, Y]
+[A, C, 2, X, Z]
+[A, C, 2, Y, Z]
+[A, C, 3, X, Y]
+[A, C,
