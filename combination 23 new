@@ -1,0 +1,72 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class CombinationGenerator {
+
+    public static void main(String[] args) {
+        // Define the input lists
+        List<String> list1 = List.of("A", "B", "C");
+        List<String> list2 = List.of("1", "2", "3");
+        List<String> list3 = List.of("X", "Y", "Z");
+
+        // Prompt the user to enter the number of elements to select from each list
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("How many elements do you want to select from each list?");
+        System.out.print("Enter the number of elements for list 1: ");
+        int numElementsList1 = scanner.nextInt();
+        System.out.print("Enter the number of elements for list 2: ");
+        int numElementsList2 = scanner.nextInt();
+        System.out.print("Enter the number of elements for list 3: ");
+        int numElementsList3 = scanner.nextInt();
+
+        // Generate the combinations based on the user's inputs
+        List<List<String>> combinations = generateCombinations(numElementsList1, numElementsList2, numElementsList3, list1, list2, list3);
+
+        // Print the combinations
+        System.out.println("Combinations:");
+        for (List<String> combination : combinations) {
+            System.out.println(combination);
+        }
+    }
+
+    public static List<List<String>> generateCombinations(int numElementsList1, int numElementsList2, int numElementsList3, List<String> list1, List<String> list2, List<String> list3) {
+        // Initialize the resulting list
+        List<List<String>> combinations = new ArrayList<>();
+
+        // Generate all possible combinations based on the user's inputs
+        for (String element1 : list1) {
+            if (numElementsList1 == 1) {
+                for (String element2 : list2) {
+                    if (numElementsList2 == 1) {
+                        for (String element3 : list3) {
+                            if (numElementsList3 == 1) {
+                                List<String> combination = List.of(element1, element2, element3);
+                                combinations.add(combination);
+                            }
+                        }
+                    } else {
+                        List<String> tempList2 = new ArrayList<>(list2);
+                        tempList2.remove(element2);
+                        List<List<String>> subCombinations = generateCombinations(numElementsList1, numElementsList2 - 1, numElementsList3, list1, tempList2, list3);
+                        for (List<String> subCombination : subCombinations) {
+                            subCombination.add(0, element1);
+                            subCombination.add(1, element2);
+                            combinations.add(subCombination);
+                        }
+                    }
+                }
+            } else {
+                List<String> tempList1 = new ArrayList<>(list1);
+                tempList1.remove(element1);
+                List<List<String>> subCombinations = generateCombinations(numElementsList1 - 1, numElementsList2, numElementsList3, tempList1, list2, list3);
+                for (List<String> subCombination : subCombinations) {
+                    subCombination.add(0, element1);
+                    combinations.add(subCombination);
+                }
+            }
+        }
+
+        return combinations;
+    }
+}
