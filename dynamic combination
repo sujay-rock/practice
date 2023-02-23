@@ -1,0 +1,44 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class StringCombination {
+    public static void main(String[] args) {
+        List<List<String>> inputLists = new ArrayList<>();
+        inputLists.add(Arrays.asList("A", "B", "C"));
+        inputLists.add(Arrays.asList("1", "2", "3"));
+        inputLists.add(Arrays.asList("X", "Y", "Z"));
+
+        List<Integer> counts = Arrays.asList(2, 1, 2);
+
+        List<List<String>> combinations = generateCombinations(inputLists, counts);
+
+        System.out.println("Combinations:");
+        for (List<String> combination : combinations) {
+            System.out.println(combination);
+        }
+    }
+
+    public static List<List<String>> generateCombinations(List<List<String>> inputLists, List<Integer> counts) {
+        List<List<String>> result = new ArrayList<>();
+        generateCombinationsHelper(inputLists, counts, new ArrayList<String>(), result, 0);
+        return result;
+    }
+
+    private static void generateCombinationsHelper(List<List<String>> inputLists, List<Integer> counts, List<String> current, List<List<String>> result, int index) {
+        if (index == inputLists.size()) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+
+        for (String s : inputLists.get(index)) {
+            current.add(s);
+            if (current.size() == counts.get(index)) {
+                generateCombinationsHelper(inputLists, counts, current, result, index + 1);
+            } else {
+                generateCombinationsHelper(inputLists, counts, current, result, index);
+            }
+            current.remove(current.size() - 1);
+        }
+    }
+}
