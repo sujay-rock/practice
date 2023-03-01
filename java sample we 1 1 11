@@ -1,0 +1,77 @@
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Set;
+
+public class AStarAlgorithm {
+
+    public static class Node implements Comparable<Node> {
+        Set<Integer> resources;
+        int cost;
+        Node parent;
+        int heuristic;
+
+        public Node(Set<Integer> resources, int cost, Node parent, int heuristic) {
+            this.resources = resources;
+            this.cost = cost;
+            this.parent = parent;
+            this.heuristic = heuristic;
+        }
+
+        @Override
+        public int compareTo(Node other) {
+            return Integer.compare(this.cost + this.heuristic, other.cost + other.heuristic);
+        }
+    }
+
+    public static List<Node> getSuccessors(Node node, int numResources) {
+        List<Node> successors = new ArrayList<>();
+        for (int i = 0; i < numResources; i++) {
+            if (!node.resources.contains(i)) {
+                Set<Integer> resources = new HashSet<>(node.resources);
+                resources.add(i);
+                successors.add(new Node(resources, node.cost + 1, node, 0));
+            }
+        }
+        return successors;
+    }
+
+    public static int heuristic(Set<Integer> resources, Set<Integer> usedResources) {
+        Set<Integer> intersection = new HashSet<>(resources);
+        intersection.retainAll(usedResources);
+        return intersection.size() * Integer.MAX_VALUE;
+    }
+
+    public static Set<Integer> allocateResources(int numResources, Set<Integer> usedResources) {
+        PriorityQueue<Node> openList = new PriorityQueue<>();
+        Set<Set<Integer>> closedList = new HashSet<>();
+        Set<Integer> initialResources = new HashSet<>();
+        Node initialNode = new Node(initialResources, 0, null, 0);
+        openList.add(initialNode);
+        while (!openList.isEmpty()) {
+            Node current = openList.poll();
+            if (current.resources.size() == 2) {
+                return current.resources;
+            }
+            closedList.add(current.resources);
+            List<Node> successors = getSuccessors(current, numResources);
+            for (Node successor : successors) {
+                if (!closedList.contains(successor.resources)) {
+                    successor.heuristic = heuristic(successor.resources, usedResources);
+                    openList.add(successor);
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        Set<Integer> usedResources = new HashSet<>();
+        int numResources = 5;
+        Set<Integer> resources = allocateResources(numResources, usedResources);
+        System.out.println("Allocated resources: " + resources);
+        usedResources.addAll(resources);
+    }
+
+}
