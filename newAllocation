@@ -1,0 +1,92 @@
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Set;
+
+public class AStarAlgorithm {
+
+    public static class Node implements Comparable<Node> {
+        List<Integer> resources;
+        int cost;
+        Node parent;
+        int heuristic;
+
+        public Node(List<Integer> resources, int cost, Node parent, int heuristic) {
+            this.resources = resources;
+            this.cost = cost;
+            this.parent = parent;
+            this.heuristic = heuristic;
+        }
+
+        @Override
+        public int compareTo(Node other) {
+            return Integer.compare(this.cost + this.heuristic, other.cost + other.heuristic);
+        }
+    }
+
+    public static List<Node> getSuccessors(Node node, List<List<Integer>> resourceGroups) {
+        List<Node> successors = new ArrayList<>();
+        for (int i = 0; i < resourceGroups.size(); i++) {
+            for (int j = 0; j < resourceGroups.get(i).size(); j++) {
+                int resource = resourceGroups.get(i).get(j);
+                if (!node.resources.contains(resource)) {
+                    List<Integer> resources = new ArrayList<>(node.resources);
+                    resources.add(resource);
+                    successors.add(new Node(resources, node.cost + 1, node, 0));
+                }
+            }
+        }
+        return successors;
+    }
+
+    public static int heuristic(List<Integer> resources, List<List<Integer>> resourceGroups,
+                                List<Integer> targetResources) {
+        int sum = 0;
+        for (int i = 0; i < resourceGroups.size(); i++) {
+            List<Integer> group = resourceGroups.get(i);
+            Set<Integer> intersection = new HashSet<>(resources);
+            intersection.retainAll(group);
+            int count = intersection.size();
+            if (count < targetResources.get(i)) {
+                sum += (targetResources.get(i) - count) * group.get(0);
+            }
+        }
+        return sum;
+    }
+
+    public static List<Integer> allocateResources(List<List<Integer>> resourceGroups,
+                                                   List<Integer> targetResources) {
+        PriorityQueue<Node> openList = new PriorityQueue<>();
+        Set<List<Integer>> closedList = new HashSet<>();
+        List<Integer> initialResources = new ArrayList<>();
+        Node initialNode = new Node(initialResources, 0, null, 0);
+        openList.add(initialNode);
+        while (!openList.isEmpty()) {
+            Node current = openList.poll();
+            if (current.resources.size() == targetResources.size()) {
+                return current.resources;
+            }
+            closedList.add(current.resources);
+            List<Node> successors = getSuccessors(current, resourceGroups);
+            for (Node successor : successors) {
+                if (!closedList.contains(successor.resources)) {
+                    successor.heuristic = heuristic(successor.resources, resourceGroups, targetResources);
+                    openList.add(successor);
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        List<List<Integer>> resourceGroups = new ArrayList<>();
+        resourceGroups.add(List.of(5, 10, 20, 30));
+        resourceGroups.add(List.of(2, 4, 6, 8, 10));
+        resourceGroups.add(List.of(1, 3, 5, 7));
+        List<Integer> targetResources = List.of(2, 2, 2);
+        List<Integer> resources = allocateResources(resourceGroups, targetResources);
+        System.out.println("Allocated resources: " + resources);
+    }
+
+}
