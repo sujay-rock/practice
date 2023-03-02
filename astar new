@@ -1,0 +1,65 @@
+import java.util.*;
+
+class Node {
+    int value;
+    int heuristic;
+    List<Node> children;
+
+    public Node(int value, int heuristic) {
+        this.value = value;
+        this.heuristic = heuristic;
+        this.children = new ArrayList<>();
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public int getHeuristic() {
+        return heuristic;
+    }
+
+    public List<Node> getChildren() {
+        return children;
+    }
+}
+
+class AStarTree {
+    public static void main(String[] args) {
+        Node root = new Node(1, 5);
+        Node node2 = new Node(2, 4);
+        Node node3 = new Node(3, 3);
+        Node node4 = new Node(4, 2);
+        Node node5 = new Node(5, 1);
+
+        root.getChildren().add(node2);
+        root.getChildren().add(node3);
+        node2.getChildren().add(node4);
+        node2.getChildren().add(node5);
+
+        System.out.println(aStar(root, 4));
+    }
+
+    public static int aStar(Node root, int target) {
+        PriorityQueue<Node> open = new PriorityQueue<>(Comparator.comparingInt(a -> a.getHeuristic()));
+        open.add(root);
+
+        while (!open.isEmpty()) {
+            Node current = open.poll();
+            System.out.println("Visiting node " + current.getValue());
+
+            if (current.getValue() == target) {
+                System.out.println("Found target " + target);
+                return current.getValue();
+            }
+
+            for (Node child : current.getChildren()) {
+                if (!open.contains(child)) {
+                    open.add(child);
+                }
+            }
+        }
+
+        return -1;
+    }
+}
