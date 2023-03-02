@@ -1,0 +1,58 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Node {
+    private String value;
+    private List<Node> children;
+    
+    public Node(String value) {
+        this.value = value;
+        this.children = new ArrayList<>();
+    }
+    
+    public void addChild(Node child) {
+        this.children.add(child);
+    }
+    
+    public static void generateCombinations(List<List<String>> lists, Node parent) {
+        if (lists.isEmpty()) {
+            return;
+        }
+        List<String> firstList = lists.get(0);
+        List<List<String>> remainingLists = lists.subList(1, lists.size());
+        for (String value : firstList) {
+            Node child = new Node(value);
+            parent.addChild(child);
+            generateCombinations(remainingLists, child);
+        }
+    }
+    
+    public static void main(String[] args) {
+        List<List<String>> lists = new ArrayList<>();
+        lists.add(List.of("A", "B"));
+        lists.add(List.of("C", "D"));
+        lists.add(List.of("E", "F", "G"));
+        
+        Node parent = new Node("Root");
+        generateCombinations(lists, parent);
+        
+        System.out.println(parent); // prints the tree structure
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(value);
+        if (!children.isEmpty()) {
+            sb.append(": [");
+            for (int i = 0; i < children.size(); i++) {
+                sb.append(children.get(i).toString());
+                if (i != children.size() - 1) {
+                    sb.append(", ");
+                }
+            }
+            sb.append("]");
+        }
+        return sb.toString();
+    }
+}
