@@ -1,0 +1,51 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class CombinationGenerator {
+
+    public static void main(String[] args) {
+        List<List<String>> inputLists = new ArrayList<>();
+        inputLists.add(List.of("a", "b", "c"));
+        inputLists.add(List.of("1", "2"));
+        inputLists.add(List.of("x", "y", "z"));
+
+        List<Node> nodes = generateCombinationTree(inputLists);
+
+        // Do something with the nodes, e.g. use A* algorithm to find the least combination
+    }
+
+    static class Node {
+        String value;
+        List<Node> children;
+
+        Node(String value) {
+            this.value = value;
+            this.children = new ArrayList<>();
+        }
+    }
+
+    static List<Node> generateCombinationTree(List<List<String>> inputLists) {
+        List<Node> result = new ArrayList<>();
+        generateCombinationTreeHelper(inputLists, 0, new Node(""), result);
+        return result;
+    }
+
+    static void generateCombinationTreeHelper(List<List<String>> inputLists, int index, Node parent, List<Node> result) {
+        if (index == inputLists.size()) {
+            result.add(parent);
+            return;
+        }
+        List<String> inputList = inputLists.get(index);
+        for (String item : inputList) {
+            Node child = new Node(item);
+            parent.children.add(child);
+            generateCombinationTreeHelper(inputLists, index + 1, child, result);
+        }
+    }
+}
+
+In this example, the generateCombinationTree method takes a list of input lists of strings, generates all possible combinations of items from the input lists, and creates a tree of nodes for each combination. The nodes are represented by the Node class, which has a value field to store the value of the node and a children field to store the child nodes.
+
+The generateCombinationTreeHelper method is a recursive helper method that creates the tree of nodes. It takes the input lists, the current index, the parent node, and a list of nodes to store the result. If the current index is equal to the size of the input lists, it means we have reached the end of the input lists, so we add the parent node to the result list. Otherwise, we get the current input list, iterate through its items, create a child node for each item, add the child node to the parent node, and recursively call the generateCombinationTreeHelper method with the child node as the new parent node.
+
+After generating the tree of nodes, you can use the A* algorithm to find the least combination. I hope this helps!
